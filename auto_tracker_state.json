@@ -1,0 +1,300 @@
+{
+  "run": 12,
+  "previousCollection": [
+    {
+      "pid": 975978981,
+      "species": "Turtwig",
+      "speciesId": "turtwig",
+      "nickname": "daftpunk",
+      "displayName": "daftpunk",
+      "level": 13,
+      "ability": "Shell Armor",
+      "item": "",
+      "nature": "Docile",
+      "gender": "M",
+      "location": "Route 201",
+      "storage": "party",
+      "box": null,
+      "slot": 1,
+      "moves": [
+        "Tackle",
+        "Mega Drain",
+        "Bite",
+        "Rock Throw"
+      ]
+    },
+    {
+      "pid": 1072426325,
+      "species": "Luvdisc",
+      "speciesId": "luvdisc",
+      "nickname": "lady gaga",
+      "displayName": "lady gaga",
+      "level": 16,
+      "ability": "Swift Swim",
+      "item": "",
+      "nature": "Hardy",
+      "gender": "F",
+      "location": "Route 219",
+      "storage": "party",
+      "box": null,
+      "slot": 2,
+      "moves": [
+        "Aqua Ring",
+        "Charm",
+        "Aqua Jet",
+        "Water Pulse"
+      ]
+    },
+    {
+      "pid": 2690755577,
+      "species": "Burmy",
+      "speciesId": "burmy",
+      "nickname": "prayers",
+      "displayName": "prayers",
+      "level": 14,
+      "ability": "Snow Cloak",
+      "item": "",
+      "nature": "Brave",
+      "gender": "M",
+      "location": "Route 202",
+      "storage": "party",
+      "box": null,
+      "slot": 3,
+      "moves": [
+        "Leech Life",
+        "Nature Power"
+      ]
+    },
+    {
+      "pid": 2239562285,
+      "species": "Cubone",
+      "speciesId": "cubone",
+      "nickname": "tameimpala",
+      "displayName": "tameimpala",
+      "level": 13,
+      "ability": "Rock Head",
+      "item": "",
+      "nature": "Timid",
+      "gender": "F",
+      "location": "Oreburgh Gate",
+      "storage": "party",
+      "box": null,
+      "slot": 4,
+      "moves": [
+        "Bone Club",
+        "Headbutt",
+        "Fling",
+        "Dig"
+      ]
+    },
+    {
+      "pid": 723278001,
+      "species": "Aron",
+      "speciesId": "aron",
+      "nickname": "MF DOOM",
+      "displayName": "MF DOOM",
+      "level": 13,
+      "ability": "Rock Head",
+      "item": "",
+      "nature": "Lonely",
+      "gender": "M",
+      "location": "Ravaged Path",
+      "storage": "party",
+      "box": null,
+      "slot": 5,
+      "moves": [
+        "Rock Throw",
+        "Dig",
+        "Iron Head",
+        "Headbutt"
+      ]
+    },
+    {
+      "pid": 165,
+      "species": "Ponyta",
+      "speciesId": "ponyta",
+      "nickname": "fleetwood",
+      "displayName": "fleetwood",
+      "level": 11,
+      "ability": "Reckless",
+      "item": "",
+      "nature": "Modest",
+      "gender": "M",
+      "location": "Route 207",
+      "storage": "party",
+      "box": null,
+      "slot": 6,
+      "moves": [
+        "Ember",
+        "Quick Attack",
+        "Stomp",
+        "Flame Wheel"
+      ]
+    },
+    {
+      "pid": 639181647,
+      "species": "Nuzleaf",
+      "speciesId": "nuzleaf",
+      "nickname": "jhenaiKorn",
+      "displayName": "jhenaiKorn",
+      "level": 15,
+      "ability": "Chlorophyll",
+      "item": "",
+      "nature": "Sassy",
+      "gender": "F",
+      "location": "Route 204",
+      "storage": "box",
+      "box": 1,
+      "slot": 1,
+      "moves": [
+        "Mega Drain",
+        "Leech Life",
+        "Absorb",
+        "Self-Destruct"
+      ]
+    },
+    {
+      "pid": 3042272870,
+      "species": "Bibarel",
+      "speciesId": "bibarel",
+      "nickname": "erkabidoof",
+      "displayName": "erkabidoof",
+      "level": 15,
+      "ability": "Simple",
+      "item": "",
+      "nature": "Calm",
+      "gender": "F",
+      "location": "Lake Verity",
+      "storage": "box",
+      "box": 1,
+      "slot": 2,
+      "moves": [
+        "Quick Attack",
+        "Mud Shot",
+        "Water Gun",
+        "Headbutt"
+      ]
+    },
+    {
+      "pid": 2895602190,
+      "species": "Goldeen",
+      "speciesId": "goldeen",
+      "nickname": "santigold",
+      "displayName": "santigold",
+      "level": 15,
+      "ability": "Swift Swim",
+      "item": "",
+      "nature": "Modest",
+      "gender": "F",
+      "location": "Route 218",
+      "storage": "box",
+      "box": 1,
+      "slot": 3,
+      "moves": [
+        "Psybeam",
+        "Peck",
+        "Aqua Jet",
+        "Mud Shot"
+      ]
+    },
+    {
+      "pid": 1262165921,
+      "species": "Vulpix",
+      "speciesId": "vulpix",
+      "nickname": "V",
+      "displayName": "V",
+      "level": 15,
+      "ability": "Flame Body",
+      "item": "",
+      "nature": "Gentle",
+      "gender": "F",
+      "location": "Verity Lakefront",
+      "storage": "box",
+      "box": 1,
+      "slot": 4,
+      "moves": [
+        "Flame Wheel",
+        "Quick Attack",
+        "Roar",
+        "Confuse Ray"
+      ]
+    },
+    {
+      "pid": 3982655424,
+      "species": "Gulpin",
+      "speciesId": "gulpin",
+      "nickname": "ameriftbal",
+      "displayName": "ameriftbal",
+      "level": 8,
+      "ability": "Gluttony",
+      "item": "",
+      "nature": "Quirky",
+      "gender": "M",
+      "location": "Route 203",
+      "storage": "box",
+      "box": 1,
+      "slot": 5,
+      "moves": [
+        "Acid",
+        "Mega Drain"
+      ]
+    },
+    {
+      "pid": 3033283898,
+      "species": "Skitty",
+      "speciesId": "skitty",
+      "nickname": "celinedion",
+      "displayName": "celinedion",
+      "level": 14,
+      "ability": "Cute Charm",
+      "item": "",
+      "nature": "Careful",
+      "gender": "F",
+      "location": "Sandgem Town",
+      "storage": "box",
+      "box": 1,
+      "slot": 6,
+      "moves": [
+        "Growl",
+        "Quick Attack",
+        "Sing",
+        "Fake Out"
+      ]
+    },
+    {
+      "pid": 3452074855,
+      "species": "Magby",
+      "speciesId": "magby",
+      "nickname": "magdastlon",
+      "displayName": "magdastlon",
+      "level": 10,
+      "ability": "Flame Body",
+      "item": "",
+      "nature": "Bold",
+      "gender": "M",
+      "location": "Oreburgh Mine",
+      "storage": "box",
+      "box": 1,
+      "slot": 7,
+      "moves": [
+        "Ember",
+        "Smog",
+        "Pound",
+        "Confuse Ray"
+      ]
+    }
+  ],
+  "previousPartyIds": [
+    "pid:975978981",
+    "pid:1072426325",
+    "pid:2690755577",
+    "pid:2239562285",
+    "pid:723278001",
+    "pid:165"
+  ],
+  "lastSnapshotAt": 1777629884022,
+  "eventIds": {
+    "auto_tracker_started|A12|2026-05-01": true,
+    "auto_baseline|A12": true
+  }
+}
