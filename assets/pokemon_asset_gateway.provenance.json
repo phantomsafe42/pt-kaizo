@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "generated": true,
+  "source": "consumer/pokemon_asset_gateway.global.js",
+  "sourceCommit": "9fbb8cd08e284756e7b873cddf856cd280200bf8",
+  "sourceSha256": "bc46626ef815107825076f108d9c8b62b9b3cb66a616a3d3d2c43497a11660bc",
+  "releaseVersion": "0.8.0-dev.1",
+  "gatewayOrigin": "https://assets.phantomsafe.tv"
+}

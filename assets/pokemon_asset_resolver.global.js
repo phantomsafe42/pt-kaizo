@@ -1,0 +1,975 @@
+(function installPokemonAssetResolver(global) {
+  "use strict";
+
+  const API_VERSION = "pokemon-asset-resolver/v4";
+  const ROOT_INDEX_PATH = "index.json";
+  const PROFILE_BY_TYPE = Object.freeze({
+    pixel: "pixel",
+    icon: "pixel",
+    "g5-static": "gen5-static",
+    "gen5-static": "gen5-static",
+    "g5-animated": "gen5-animated",
+    "g5-anim": "gen5-animated",
+    "gen5-animated": "gen5-animated",
+    "gen5-anim": "gen5-animated",
+    "3d": "3d",
+    seaglass: "seaglass"
+  });
+  const pendingImageQueries = new Map();
+  let nextImageToken = 1;
+
+  function normalizeToken(value) {
+    return String(value ?? "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/♀/g, " female ")
+      .replace(/♂/g, " male ")
+      .replace(/\balolan\b/g, "alola")
+      .replace(/\bgalarian\b/g, "galar")
+      .replace(/\bhisuian\b/g, "hisui")
+      .replace(/\bpaldean\b/g, "paldea")
+      .replace(/\bforme?\b/g, "")
+      .replace(/\bfemale\b/g, "female")
+      .replace(/\bmale\b/g, "male")
+      .replace(/[^a-z0-9]+/g, "");
+  }
+
+  function normalizeGender(value) {
+    const token = normalizeToken(value);
+    if (!token || token === "default" || token === "neutral" || token === "genderless" || token === "none" || token === "n") return "default";
+    if (token === "female" || token === "f") return "female";
+    if (token === "male" || token === "m") return "male";
+    return token;
+  }
+
+  function normalizeSpriteType(value) {
+    const token = String(value || "").toLowerCase().trim();
+    if (!PROFILE_BY_TYPE[token]) return null;
+    return token;
+  }
+
+  function variantKeyFor(query, spriteType) {
+    const iconRequested = spriteType === "icon" || String(query.kind || "").toLowerCase() === "icon";
+    if (iconRequested) {
+      if (query.shiny) return null;
+      return Number(query.iconFrame || query.frame || 1) === 2 ? "iconFrame2" : "iconFrame1";
+    }
+    const view = String(query.view || (query.back ? "back" : "front")).toLowerCase() === "back" ? "Back" : "Front";
+    return `${query.shiny ? "shiny" : "normal"}${view}`;
+  }
+
+  function normalizeTypeIconQuery(query = {}) {
+    const presentationToken = String(query.presentation || query.format || "symbol").toLowerCase().trim();
+    const presentation = presentationToken === "name" || presentationToken === "label" ? "name" : presentationToken === "symbol" || presentationToken === "icon" ? "symbol" : null;
+    if (!presentation) return null;
+    const family = String(query.family || "").toLowerCase().trim();
+    let style = String(query.style || "").toLowerCase().trim();
+    let state = String(query.state || (query.tera ? "tera" : "standard")).toLowerCase().trim();
+    if (!style && family) {
+      if (family === "sv-tera") { style = "sv"; state = "tera"; }
+      else style = family;
+    }
+    style ||= "sv";
+    const styleToken = normalizeToken(style);
+    if (style === "bdsp/la" || ["la", "legendsarceus", "bdspla"].includes(styleToken)) style = "bdsp-la";
+    if (["pokemonhome", "home3", "home30"].includes(styleToken)) style = "home";
+    if (!['bdsp-la', 'bdsp', 'home', 'sv'].includes(style) || !['standard', 'tera'].includes(state)) return null;
+    const type = normalizeToken(query.type || query.typeId || query.name);
+    if (!type) return null;
+    const locale = presentation === "symbol" ? "und" : String(query.locale || "en").toLowerCase().trim();
+    return { presentation, style, state, locale, type };
+  }
+
+  function normalizeItemSpriteQuery(query = {}) {
+    const rawItem = query.item ?? query.itemId ?? query.name;
+    if (rawItem === undefined || rawItem === null) return null;
+    const item = normalizeToken(rawItem);
+    if (!item || ["0", "none", "noitem", "empty", "null"].includes(item)) return { absent: true };
+    const styleToken = normalizeToken(query.style || query.spriteStyle || "showdown");
+    const style = ["showdown", "pokemonshowdown", "smogon"].includes(styleToken) ? "showdown" : null;
+    if (!style) return null;
+    return { style, item };
+  }
+
+  function normalizeStatusConditionIconQuery(query = {}) {
+    const styleToken = normalizeToken(query.style || query.game || query.family);
+    let style = null;
+    if (["bdsp", "brilliantdiamond", "shiningpearl", "brilliantdiamondshiningpearl"].includes(styleToken)) style = "bdsp";
+    if (["za", "legendsza", "pokemonlegendsza"].includes(styleToken)) style = "za";
+    if (!style) return null;
+    const conditionToken = normalizeToken(query.condition || query.status || query.conditionId || query.name);
+    const conditionAliases = {
+      fainted: "fainted", faint: "fainted", ko: "fainted", knockedout: "fainted",
+      paralysis: "paralysis", paralyzed: "paralysis", paralysed: "paralysis", par: "paralysis",
+      asleep: "asleep", sleep: "asleep", slp: "asleep",
+      drowsy: "drowsy", drowsiness: "drowsy",
+      frozen: "frozen", freeze: "frozen", frz: "frozen",
+      burned: "burned", burnt: "burned", burn: "burned", brn: "burned",
+      poisoned: "poisoned", poison: "poisoned", psn: "poisoned",
+      badlypoisoned: "badly-poisoned", badpoison: "badly-poisoned", toxic: "badly-poisoned", tox: "badly-poisoned"
+    };
+    const condition = conditionAliases[conditionToken];
+    if (!condition) return null;
+    if ((style === "bdsp" && condition === "drowsy") || (style === "za" && condition === "asleep")) return null;
+    return { style, condition };
+  }
+
+  function normalizeBadgeIconQuery(query = {}) {
+    const styleAliases = {
+      lgpekanto: "lgpe-kanto", lgpe: "lgpe-kanto", kanto: "lgpe-kanto", letsgo: "lgpe-kanto",
+      letsgopikachu: "lgpe-kanto", letsgoeevee: "lgpe-kanto", fireredomega: "lgpe-kanto",
+      hgssjohto: "hgss-johto", hgss: "hgss-johto", johto: "hgss-johto", stormsilver: "hgss-johto",
+      pglhoenn: "pgl-hoenn", pgl: "pgl-hoenn", hoenn: "pgl-hoenn", emerald: "pgl-hoenn", emeraldseaglass: "pgl-hoenn",
+      dpsinnoh: "dp-sinnoh", dp: "dp-sinnoh", dpp: "dp-sinnoh", dppt: "dp-sinnoh", sinnoh: "dp-sinnoh",
+      platinum: "dp-sinnoh", platinumkaizo: "dp-sinnoh", renegadeplatinum: "dp-sinnoh",
+      b2w2unova: "b2w2-unova", b2w2: "b2w2-unova", bw2: "b2w2-unova", unova: "b2w2-unova", voltwhite2r: "b2w2-unova",
+      voltwhite2redux: "b2w2-unova", black2: "b2w2-unova", white2: "b2w2-unova", black2white2: "b2w2-unova",
+      bw: "b2w2-unova", bwunova: "b2w2-unova", black: "b2w2-unova", white: "b2w2-unova", blackwhite: "b2w2-unova",
+      pokemonunbound: "pokemon-unbound", unbound: "pokemon-unbound", borrius: "pokemon-unbound"
+    };
+    const style = styleAliases[normalizeToken(query.style || query.game || query.region || query.family)];
+    if (!style) return null;
+    const badgeToken = normalizeToken(query.badge ?? query.badgeId ?? query.split ?? query.leader ?? query.name);
+    if (!badgeToken) return null;
+    const aliases = {
+      "lgpe-kanto": {
+        boulder: "boulder", boulderbadge: "boulder", brock: "boulder",
+        cascade: "cascade", cascadebadge: "cascade", misty: "cascade",
+        thunder: "thunder", thunderbadge: "thunder", ltsurge: "thunder", surge: "thunder",
+        rainbow: "rainbow", rainbowbadge: "rainbow", erika: "rainbow",
+        soul: "soul", soulbadge: "soul", koga: "soul",
+        marsh: "marsh", marshbadge: "marsh", sabrina: "marsh",
+        volcano: "volcano", volcanobadge: "volcano", blaine: "volcano",
+        earth: "earth", earthbadge: "earth", giovanni: "earth",
+        champion: "champion-ribbon", championribbon: "champion-ribbon", elite4: "champion-ribbon", elitefour: "champion-ribbon", blue: "champion-ribbon"
+      },
+      "hgss-johto": {
+        zephyr: "zephyr", zephyrbadge: "zephyr", falkner: "zephyr",
+        hive: "hive", hivebadge: "hive", bugsy: "hive",
+        plain: "plain", plainbadge: "plain", whitney: "plain",
+        fog: "fog", fogbadge: "fog", morty: "fog",
+        storm: "storm", stormbadge: "storm", chuck: "storm",
+        mineral: "mineral", mineralbadge: "mineral", jasmine: "mineral",
+        glacier: "glacier", glacierbadge: "glacier", pryce: "glacier",
+        rising: "rising", risingbadge: "rising", clair: "rising",
+        league: "league-emblem", leagueemblem: "league-emblem", champion: "league-emblem", elite4: "league-emblem", elitefour: "league-emblem", lance: "league-emblem",
+        postgame: "postgame-emblem", postgameemblem: "postgame-emblem"
+      },
+      "pgl-hoenn": {
+        stone: "stone", stonebadge: "stone", roxanne: "stone",
+        knuckle: "knuckle", knucklebadge: "knuckle", brawly: "knuckle",
+        dynamo: "dynamo", dynamobadge: "dynamo", wattson: "dynamo",
+        heat: "heat", heatbadge: "heat", flannery: "heat",
+        balance: "balance", balancebadge: "balance", norman: "balance",
+        feather: "feather", featherbadge: "feather", winona: "feather",
+        mind: "mind", mindbadge: "mind", tate: "mind", liza: "mind", tateandliza: "mind",
+        rain: "rain", rainbadge: "rain", wallace: "rain", juan: "rain",
+        champion: "champion-ribbon", championribbon: "champion-ribbon", elite4: "champion-ribbon", elitefour: "champion-ribbon", steven: "champion-ribbon"
+      },
+      "dp-sinnoh": {
+        coal: "coal", coalbadge: "coal", roark: "coal",
+        forest: "forest", forestbadge: "forest", gardenia: "forest",
+        relic: "relic", relicbadge: "relic", fantina: "relic",
+        cobble: "cobble", cobblebadge: "cobble", maylene: "cobble",
+        fen: "fen", fenbadge: "fen", wake: "fen", crasherwake: "fen",
+        mine: "mine", minebadge: "mine", byron: "mine",
+        icicle: "icicle", iciclebadge: "icicle", candice: "icicle",
+        beacon: "beacon", beaconbadge: "beacon", volkner: "beacon",
+        galactic: "galactic-logo", galacticlogo: "galactic-logo", cyrus: "galactic-logo", postgame: "galactic-logo",
+        champion: "champion-ribbon", championribbon: "champion-ribbon", elite4: "champion-ribbon", elitefour: "champion-ribbon", cynthia: "champion-ribbon"
+      },
+      "b2w2-unova": {
+        basic: "basic", basicbadge: "basic", cheren: "basic", lenora: "basic",
+        trio: "trio", triobadge: "trio", cilan: "trio", chili: "trio", cress: "trio",
+        freeze: "freeze", freezebadge: "freeze", brycen: "freeze",
+        toxic: "toxic", toxicbadge: "toxic", roxie: "toxic",
+        insect: "insect", insectbadge: "insect", burgh: "insect",
+        bolt: "bolt", boltbadge: "bolt", elesa: "bolt",
+        quake: "quake", quakebadge: "quake", clay: "quake",
+        jet: "jet", jetbadge: "jet", skyla: "jet",
+        legend: "legend", legendbadge: "legend", drayden: "legend",
+        wave: "wave", wavebadge: "wave", marlon: "wave",
+        plasma: "plasma-logo", plasmalogo: "plasma-logo", ghetsis: "plasma-logo",
+        pokemonleague: "pokemon-league-logo", pokemonleaguelogo: "pokemon-league-logo", league: "pokemon-league-logo",
+        champion: "pokemon-league-logo", iris: "pokemon-league-logo", elite4: "pokemon-league-logo", elitefour: "pokemon-league-logo"
+      },
+      "pokemon-unbound": {
+        leaf: "leaf", leafbadge: "leaf", mirskle: "leaf",
+        vision: "vision", visionbadge: "vision", vega: "vision",
+        wings: "wings", wingsbadge: "wings", alice: "wings",
+        fall: "fall", fallbadge: "fall", mel: "fall",
+        maxima: "maxima-emblem", successormaxima: "maxima-emblem", maximaemblem: "maxima-emblem",
+        battery: "battery", batterybadge: "battery", galavan: "battery",
+        ring: "ring", ringbadge: "ring", bigmo: "ring",
+        swamp: "swamp", swampbadge: "swamp", tessy: "swamp",
+        time: "time", timebadge: "time", benjamin: "time",
+        league: "champion-ribbon", pokemonleague: "champion-ribbon", champion: "champion-ribbon",
+        championribbon: "champion-ribbon", elite4: "champion-ribbon", elitefour: "champion-ribbon", e4: "champion-ribbon"
+      }
+    };
+    // Art style and game context are independent: Iris changes roles in BW2.
+    const gameToken = normalizeToken(query.game || query.style || query.family);
+    const isBw = ["bw", "bwunova", "black", "white", "blackwhite"].includes(gameToken);
+    const badge = style === "b2w2-unova" && badgeToken === "iris" && isBw
+      ? "legend" : aliases[style]?.[badgeToken];
+    return badge ? { style, badge } : null;
+  }
+
+  function normalizeGameTitleId(value) {
+    return String(value ?? "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/^pokemon\s+/, "")
+      .replace(/&/g, " and ")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  function normalizeGameTitleArtQuery(query = {}) {
+    const titleId = normalizeGameTitleId(query.titleId ?? query.gameId ?? query.game ?? query.title ?? query.name);
+    if (!titleId) return null;
+    const sizeToken = normalizeToken(query.size || query.logoSize || query.variant || "full");
+    const size = ["full", "standard", "large", "original"].includes(sizeToken)
+      ? "full"
+      : ["small", "compact", "thumbnail", "thumb"].includes(sizeToken) ? "small" : null;
+    const formatToken = normalizeToken(query.format || query.extension || query.mediaType || "webp");
+    const format = formatToken === "png" || formatToken === "imagepng"
+      ? "png"
+      : formatToken === "webp" || formatToken === "imagewebp" ? "webp" : null;
+    return size && format ? { titleId, size, format } : null;
+  }
+
+  const TRAINER_GAME_STYLE_ALIASES = Object.freeze({
+    r: "red", red: "red", g: "green", green: "green", b: "blue", blue: "blue",
+    rb: "red-blue", redblue: "red-blue", rg: "red-green", redgreen: "red-green",
+    rgb: "red-green-blue", redgreenblue: "red-green-blue", rgby: "red-green-blue-yellow", redgreenblueyellow: "red-green-blue-yellow",
+    y: "yellow", yellow: "yellow", gs: "gold-silver", goldsilver: "gold-silver", c: "crystal", crystal: "crystal", golddemo: "gold-demo",
+    ruby: "ruby-sapphire", sapphire: "ruby-sapphire", rubysapphire: "ruby-sapphire", rs: "ruby-sapphire",
+    emerald: "emerald", e: "emerald", firered: "firered-leafgreen", leafgreen: "firered-leafgreen", fireredleafgreen: "firered-leafgreen", frlg: "firered-leafgreen",
+    diamond: "diamond-pearl", pearl: "diamond-pearl", diamondpearl: "diamond-pearl", dp: "diamond-pearl", platinum: "platinum", pt: "platinum",
+    heartgold: "heartgold-soulsilver", soulsilver: "heartgold-soulsilver", heartgoldsoulsilver: "heartgold-soulsilver", hgss: "heartgold-soulsilver",
+    black: "black-white", white: "black-white", blackwhite: "black-white", bw: "black-white",
+    black2: "black-2-white-2", white2: "black-2-white-2", black2white2: "black-2-white-2", b2w2: "black-2-white-2",
+    x: "x-y", yversion: "x-y", xy: "x-y", omegaruby: "omega-ruby-alpha-sapphire", alphasapphire: "omega-ruby-alpha-sapphire", oras: "omega-ruby-alpha-sapphire",
+    sun: "sun-moon", moon: "sun-moon", sunmoon: "sun-moon", sm: "sun-moon",
+    ultrasun: "ultra-sun-ultra-moon", ultramoon: "ultra-sun-ultra-moon", ultrasunultramoon: "ultra-sun-ultra-moon", usum: "ultra-sun-ultra-moon",
+    letsgopikachu: "lets-go-pikachu-eevee", letsgoeevee: "lets-go-pikachu-eevee", letsgopikachueevee: "lets-go-pikachu-eevee", lgpe: "lets-go-pikachu-eevee",
+    pokemonruby: "ruby-sapphire", pokemonsapphire: "ruby-sapphire", pokemonemerald: "emerald",
+    pokemonfirered: "firered-leafgreen", pokemonleafgreen: "firered-leafgreen",
+    pokemondiamond: "diamond-pearl", pokemonpearl: "diamond-pearl", pokemonplatinum: "platinum",
+    pokemonheartgold: "heartgold-soulsilver", pokemonsoulsilver: "heartgold-soulsilver",
+    pokemonblack: "black-white", pokemonwhite: "black-white", pokemonblack2: "black-2-white-2", pokemonwhite2: "black-2-white-2"
+  });
+  const TRAINER_CLASS_ALIASES = Object.freeze({
+    cooltrainer: "ace-trainer", cooltrainerf: "ace-trainer", cooltrainerm: "ace-trainer",
+    blackbelt: "black-belt", blackbeltf: "black-belt", blackbeltm: "black-belt", pokemaniac: "poke-maniac", pkmnmaniac: "poke-maniac",
+    pokekid: "poke-kid", pokemonbreeder: "pokemon-breeder", pokemonranger: "pokemon-ranger", pokemontrainer: "pokemon-trainer",
+    teamrocket: "team-rocket-grunt", teamrocketgrunt: "team-rocket-grunt", teamplasmagrunt: "team-plasma-grunt",
+    officeworker: "office-worker", clerk: "office-worker"
+  });
+  function trainerSlug(value) {
+    return String(value ?? "")
+      .toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/♀/g, " female ").replace(/♂/g, " male ").replace(/pok[eé]mon/g, "pokemon")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").replace(/-+/g, "-");
+  }
+  function normalizeTrainerClass(value) {
+    const cleaned = String(value ?? "")
+      .replace(/^TRAINER_?CLASS_/i, "")
+      .replace(/_(?:FEMALE|MALE|F|M)$/i, "")
+      .replace(/\b(?:female|male)\b/gi, "")
+      .replace(/\(Trainer class\)/gi, "")
+      .trim();
+    return TRAINER_CLASS_ALIASES[normalizeToken(cleaned)] || trainerSlug(cleaned);
+  }
+  function normalizeTrainerSpriteQuery(query = {}) {
+    const gameValue = query.gameStyle ?? query.style ?? query.game ?? query.gameId;
+    const directStyle = String(gameValue || "").toLowerCase().trim();
+    const gameStyle = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(directStyle) && Object.values(TRAINER_GAME_STYLE_ALIASES).includes(directStyle)
+      ? directStyle : TRAINER_GAME_STYLE_ALIASES[normalizeToken(gameValue)];
+    const rawKind = normalizeToken(query.subjectKind || query.trainerKind || (query.trainerClass || query.category ? "class" : query.special ? "special" : "character"));
+    const subjectKind = rawKind === "class" || rawKind === "trainerclass" || rawKind === "category" ? "class"
+      : rawKind === "character" || rawKind === "trainer" || rawKind === "named" ? "character"
+        : rawKind === "special" ? "special" : null;
+    const subjectValue = query.subject ?? query.trainerClass ?? query.category ?? query.character ?? query.trainer ?? query.name ?? query.special;
+    const subject = subjectKind === "class" ? normalizeTrainerClass(subjectValue) : trainerSlug(subjectValue);
+    if (!gameStyle || !subjectKind || !subject) return null;
+    const spriteSet = query.spriteSet == null || query.spriteSet === "" ? null : trainerSlug(query.spriteSet);
+    const gender = query.gender == null || query.gender === "" ? null : normalizeGender(query.gender);
+    if (gender && !["default", "female", "male"].includes(gender)) return null;
+    const presentationAliases = { front: "battle-front", battlefront: "battle-front", back: "battle-back", battleback: "battle-back", versus: "versus", vs: "versus", portrait: "portrait" };
+    const defaultPresentation = ["x-y", "omega-ruby-alpha-sapphire", "sun-moon", "ultra-sun-ultra-moon", "lets-go-pikachu-eevee"].includes(gameStyle) ? "versus" : "battle-front";
+    const presentation = presentationAliases[normalizeToken(query.presentation ?? query.view ?? defaultPresentation)];
+    if (!presentation) return null;
+    const variant = query.variant == null || query.variant === "" ? null : trainerSlug(query.variant);
+    const locale = trainerSlug(query.locale ?? "international");
+    const palette = trainerSlug(query.palette ?? "default");
+    const edition = trainerSlug(query.edition ?? "retail");
+    if ((query.variant != null && !variant) || !locale || !palette || !edition) return null;
+    return { gameStyle, spriteSet, subjectKind, subject, gender, presentation, variant, locale, palette, edition };
+  }
+
+  function trimBaseUrl(value) {
+    const result = String(value || "").trim().replace(/\/+$/, "");
+    if (!result || /<owner>|<asset-repo>|<immutable-tag>|__POKEMON_ASSET_RELEASE_BASE__/i.test(result)) return null;
+    return result;
+  }
+
+  function configuredReleaseBase(documentObject = global.document) {
+    const explicit = trimBaseUrl(global.POKEMON_ASSET_RELEASE_BASE);
+    if (explicit) return explicit;
+    return trimBaseUrl(documentObject?.querySelector?.('meta[name="pokemon-asset-release-base"]')?.content);
+  }
+
+  function joinReleaseUrl(baseUrl, relativePath) {
+    const base = trimBaseUrl(baseUrl);
+    if (!base) return null;
+    const path = String(relativePath || "").replace(/^\/+/, "");
+    if (/^[a-z][a-z0-9+.-]*:\/\//i.test(base)) return new URL(path, `${base}/`).href;
+    return `${base}/${path}`;
+  }
+
+  function bytesToHex(bytes) {
+    return [...bytes].map(value => value.toString(16).padStart(2, "0")).join("");
+  }
+
+  async function sha256Hex(bytes) {
+    if (!global.crypto?.subtle) throw new Error("Web Crypto SHA-256 is unavailable; asset indexes cannot be verified.");
+    return bytesToHex(new Uint8Array(await global.crypto.subtle.digest("SHA-256", bytes)));
+  }
+
+  function jsonFromBytes(bytes, url) {
+    try {
+      return JSON.parse(new TextDecoder().decode(bytes));
+    } catch (error) {
+      throw new Error(`Pokemon asset JSON is invalid at ${url}: ${error.message}`);
+    }
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function candidateDetails([appearanceId, record]) {
+    return {
+      appearanceId,
+      record,
+      key: normalizeToken(appearanceId),
+      appearance: normalizeToken(record.appearanceId),
+      species: normalizeToken(record.speciesId),
+      baseSpecies: normalizeToken(record.baseSpeciesId),
+      display: normalizeToken(record.displayName),
+      form: normalizeToken(record.formId || "base"),
+      isDefaultForm: record.isDefaultForm === true,
+      nationalDex: Number(record.nationalDex || 0),
+      gameSpeciesId: Number(record.gameSpeciesId || 0),
+      romSha256: String(record.romSha256 || "").toLowerCase()
+    };
+  }
+
+  function exactAppearance(index, requestedId) {
+    if (!requestedId) return null;
+    const raw = String(requestedId);
+    const aliased = index.aliases?.[raw] || index.aliases?.[normalizeToken(raw)] || raw;
+    if (index.appearances?.[aliased]) return [aliased, index.appearances[aliased]];
+    const token = normalizeToken(aliased);
+    const matches = Object.entries(index.appearances || {}).filter(([id, record]) =>
+      normalizeToken(id) === token || normalizeToken(record.appearanceId) === token
+    );
+    return matches.length === 1 ? matches[0] : null;
+  }
+
+  function scoreCandidate(candidate, query) {
+    const requestedSpecies = normalizeToken(query.species || query.name || query.speciesId);
+    const requestedForm = normalizeToken(query.form || query.formId);
+    const requestedDex = Number(query.nationalDex || query.dexNo || 0);
+    if (requestedDex && candidate.nationalDex !== requestedDex) return -1;
+    if (!requestedSpecies && !requestedDex) return -1;
+
+    let score = requestedDex ? 80 : 0;
+    if (requestedSpecies) {
+      if (candidate.key === requestedSpecies || candidate.appearance === requestedSpecies) score += 500;
+      if (candidate.display === requestedSpecies) score += 480;
+      if (candidate.species === requestedSpecies || candidate.baseSpecies === requestedSpecies) score += 260;
+      const combined = [
+        `${requestedSpecies}${requestedForm}`,
+        `${requestedForm}${requestedSpecies}`
+      ];
+      if (requestedForm && combined.includes(candidate.key)) score += 520;
+      if (requestedForm && combined.includes(candidate.appearance)) score += 510;
+      if (!score && !requestedDex) return -1;
+    }
+
+    if (requestedForm) {
+      if (candidate.form === requestedForm) score += 240;
+      else if (candidate.key.includes(requestedForm) || candidate.appearance.includes(requestedForm) || candidate.display.includes(requestedForm)) score += 120;
+      else return -1;
+    } else if (candidate.isDefaultForm) {
+      score += 220;
+    } else if (candidate.form === "base" || !candidate.form) {
+      score += 90;
+    }
+    return score;
+  }
+
+  function findAppearance(index, query) {
+    const exact = exactAppearance(index, query.appearanceId || query.canonicalAppearanceId);
+    if (exact) return { status: "ok", appearanceId: exact[0], record: exact[1] };
+
+    const gameSpeciesId = Number(query.gameSpeciesId || query.gameAppearanceId || 0);
+    if (gameSpeciesId) {
+      const romSha256 = String(query.romSha256 || "").toLowerCase();
+      const matches = Object.entries(index.appearances || {}).filter((entry) => {
+        const candidate = candidateDetails(entry);
+        return candidate.gameSpeciesId === gameSpeciesId && (!romSha256 || candidate.romSha256 === romSha256);
+      });
+      if (matches.length === 1) return { status: "ok", appearanceId: matches[0][0], record: matches[0][1] };
+      return { status: "unavailable", reason: matches.length ? "ambiguous-game-species" : "appearance-not-found" };
+    }
+
+    const scored = Object.entries(index.appearances || {})
+      .map(entry => ({ entry, score: scoreCandidate(candidateDetails(entry), query) }))
+      .filter(item => item.score >= 0)
+      .sort((left, right) => right.score - left.score || left.entry[0].localeCompare(right.entry[0]));
+    if (!scored.length) return { status: "unavailable", reason: "appearance-not-found" };
+    if (scored.length > 1 && scored[0].score === scored[1].score) {
+      return { status: "unavailable", reason: "ambiguous-appearance", candidates: scored.filter(item => item.score === scored[0].score).map(item => item.entry[0]) };
+    }
+    return { status: "ok", appearanceId: scored[0].entry[0], record: scored[0].entry[1] };
+  }
+
+  function selectGenderVariant(record, requestedGender, variantKey) {
+    const variants = record?.variants || {};
+    const keys = Object.keys(variants).filter(key => variants[key]?.[variantKey]);
+    if (!keys.length) return { status: "unavailable", reason: "gender-variants-missing" };
+    const gender = normalizeGender(requestedGender);
+    if (gender !== "default" && keys.includes(gender)) return { status: "ok", genderVariant: gender, variants: variants[gender], genderResolution: "requested" };
+    if (keys.includes("default")) return { status: "ok", genderVariant: "default", variants: variants.default, genderResolution: gender === "default" ? "default" : "shared-default" };
+    if (gender === "default") {
+      const selected = keys.includes("male") ? "male" : keys.includes("female") ? "female" : [...keys].sort()[0];
+      return { status: "ok", genderVariant: selected, variants: variants[selected], genderResolution: `defaulted-${selected}` };
+    }
+    if (keys.length === 1) return { status: "ok", genderVariant: keys[0], variants: variants[keys[0]], genderResolution: `fixed-${keys[0]}` };
+    return { status: "unavailable", reason: "gender-variant-not-found", availableGenders: keys };
+  }
+
+  function createResolver(options = {}) {
+    const fetcher = options.fetch || global.fetch?.bind(global);
+    let baseUrl = trimBaseUrl(options.baseUrl) || configuredReleaseBase(options.document);
+    let rootPromise = null;
+    let catalogPromise = null;
+    const profilePromises = new Map();
+    const collectionPromises = new Map();
+    const diagnostics = {
+      apiVersion: API_VERSION,
+      releaseBase: baseUrl,
+      releaseVersion: null,
+      loadedProfiles: [],
+      loadedCollections: [],
+      resolved: 0,
+      fallbacks: 0,
+      unavailable: 0,
+      errors: []
+    };
+
+    async function loadJson(relativePath, expectedSha256 = null) {
+      if (!fetcher) throw new Error("Fetch is unavailable; Pokemon assets cannot be loaded.");
+      const url = joinReleaseUrl(baseUrl, relativePath);
+      if (!url) throw new Error("Pokemon asset release base is not configured.");
+      const response = await fetcher(url, { cache: "no-store" });
+      if (!response.ok) throw new Error(`Pokemon asset request failed (${response.status}) at ${url}`);
+      const bytes = await response.arrayBuffer();
+      if (expectedSha256) {
+        const actual = await sha256Hex(bytes);
+        if (actual !== String(expectedSha256).toLowerCase()) throw new Error(`Pokemon asset index integrity failed at ${url}`);
+      }
+      return jsonFromBytes(bytes, url);
+    }
+
+    async function loadRoot() {
+      if (!rootPromise) {
+        rootPromise = loadJson(ROOT_INDEX_PATH).then(index => {
+          if (index.datasetId !== "pokemon-assets" || !Array.isArray(index.profiles) || !index.assetCatalog?.path) throw new Error("Pokemon asset root index has an unsupported contract.");
+          diagnostics.releaseVersion = index.releaseVersion;
+          return index;
+        }).catch(error => {
+          rootPromise = null;
+          diagnostics.errors.push(error.message);
+          throw error;
+        });
+      }
+      return rootPromise;
+    }
+
+    async function loadCatalog() {
+      if (!catalogPromise) {
+        catalogPromise = loadRoot().then(async root => {
+          const catalog = await loadJson(root.assetCatalog.path, root.assetCatalog.sha256);
+          if (catalog.datasetId !== "pokemon-assets" || catalog.releaseVersion !== root.releaseVersion || !Array.isArray(catalog.collections)) {
+            throw new Error("Pokemon typed asset catalog has an unsupported contract.");
+          }
+          return catalog;
+        }).catch(error => {
+          catalogPromise = null;
+          diagnostics.errors.push(error.message);
+          throw error;
+        });
+      }
+      return catalogPromise;
+    }
+
+    async function loadCollection(collectionId) {
+      if (!collectionPromises.has(collectionId)) {
+        collectionPromises.set(collectionId, loadCatalog().then(async catalog => {
+          const descriptor = catalog.collections.find(collection => collection.collectionId === collectionId);
+          if (!descriptor?.indexPath) throw new Error(`Pokemon asset collection is unavailable: ${collectionId}`);
+          const index = await loadJson(descriptor.indexPath, descriptor.indexSha256);
+          if (index.collectionId !== collectionId || index.releaseVersion !== catalog.releaseVersion || !Array.isArray(index.selectorFields)) {
+            throw new Error(`Pokemon asset collection contract mismatch: ${collectionId}`);
+          }
+          if (!diagnostics.loadedCollections.includes(collectionId)) diagnostics.loadedCollections.push(collectionId);
+          return index;
+        }).catch(error => {
+          collectionPromises.delete(collectionId);
+          diagnostics.errors.push(error.message);
+          throw error;
+        }));
+      }
+      return collectionPromises.get(collectionId);
+    }
+
+    async function loadProfile(profileId) {
+      if (!profilePromises.has(profileId)) {
+        profilePromises.set(profileId, loadRoot().then(async root => {
+          const descriptor = root.profiles.find(profile => profile.profileId === profileId);
+          if (!descriptor) throw new Error(`Pokemon asset profile is unavailable: ${profileId}`);
+          const index = await loadJson(descriptor.indexPath, descriptor.indexSha256);
+          if (index.profileId !== profileId || index.releaseVersion !== root.releaseVersion) throw new Error(`Pokemon asset profile contract mismatch: ${profileId}`);
+          if (!diagnostics.loadedProfiles.includes(profileId)) diagnostics.loadedProfiles.push(profileId);
+          return index;
+        }).catch(error => {
+          profilePromises.delete(profileId);
+          diagnostics.errors.push(error.message);
+          throw error;
+        }));
+      }
+      return profilePromises.get(profileId);
+    }
+
+    async function resolveSingle(query, spriteType) {
+      const profileId = PROFILE_BY_TYPE[spriteType];
+      const variantKey = variantKeyFor(query, spriteType);
+      if (!variantKey) return { status: "unavailable", reason: "shiny-icon-not-supported", profileId, spriteType };
+      const index = await loadProfile(profileId);
+      const appearance = findAppearance(index, query);
+      if (appearance.status !== "ok") return { ...appearance, profileId, spriteType, variantKey };
+      const gender = selectGenderVariant(appearance.record, query.gender, variantKey);
+      if (gender.status !== "ok") return { ...gender, profileId, spriteType, appearanceId: appearance.appearanceId, variantKey };
+      const asset = gender.variants[variantKey];
+      if (!asset) return {
+        status: "unavailable",
+        reason: "variant-not-found",
+        profileId,
+        spriteType,
+        appearanceId: appearance.appearanceId,
+        genderVariant: gender.genderVariant,
+        variantKey
+      };
+      return {
+        status: "ok",
+        apiVersion: API_VERSION,
+        releaseVersion: index.releaseVersion,
+        profileId,
+        spriteType,
+        appearanceId: appearance.appearanceId,
+        nationalDex: appearance.record.nationalDex ?? null,
+        gameSpeciesId: appearance.record.gameSpeciesId ?? null,
+        romSha256: appearance.record.romSha256 ?? null,
+        genderVariant: gender.genderVariant,
+        genderResolution: gender.genderResolution,
+        variantKey,
+        path: asset.path,
+        url: joinReleaseUrl(baseUrl, asset.path),
+        sha256: asset.sha256,
+        mediaType: asset.mediaType,
+        width: asset.width,
+        height: asset.height,
+        motion: asset.motion,
+        fallback: null
+      };
+    }
+
+    async function resolve(query = {}) {
+      const requestedType = normalizeSpriteType(query.spriteType || query.profile || query.kind || "pixel");
+      if (!baseUrl) {
+        diagnostics.unavailable += 1;
+        return { status: "unavailable", reason: "release-base-not-configured", requested: query };
+      }
+      if (!requestedType) {
+        diagnostics.unavailable += 1;
+        return { status: "unavailable", reason: "invalid-sprite-type", requested: query };
+      }
+      const fallbackTypes = Array.isArray(query.fallbackSpriteTypes || query.fallbackProfiles)
+        ? (query.fallbackSpriteTypes || query.fallbackProfiles).map(normalizeSpriteType).filter(Boolean)
+        : [];
+      const attempts = [...new Set([requestedType, ...fallbackTypes])];
+      let firstUnavailable = null;
+      for (const spriteType of attempts) {
+        try {
+          const result = await resolveSingle(query, spriteType);
+          if (result.status === "ok") {
+            diagnostics.resolved += 1;
+            if (spriteType !== requestedType) {
+              diagnostics.fallbacks += 1;
+              result.fallback = { used: true, requestedSpriteType: requestedType, resolvedSpriteType: spriteType, reason: firstUnavailable?.reason || "primary-unavailable" };
+            }
+            return result;
+          }
+          firstUnavailable ||= result;
+        } catch (error) {
+          diagnostics.unavailable += 1;
+          return { status: "unavailable", reason: "profile-load-failed", error: error.message, requested: query, spriteType };
+        }
+      }
+      diagnostics.unavailable += 1;
+      return { ...(firstUnavailable || { status: "unavailable", reason: "asset-not-found" }), requested: query };
+    }
+
+    async function resolveCollectionAsset(collectionId, kind, selectors, query) {
+      try {
+        const index = await loadCollection(collectionId);
+        const key = JSON.stringify(index.selectorFields.map(field => selectors[field]));
+        const assetId = index.selectorIndex?.[key];
+        const asset = assetId ? index.assets?.[assetId] : null;
+        const coverageGap = !asset
+          ? (index.coverageGaps || []).find(gap => JSON.stringify(index.selectorFields.map(field => gap.selectors?.[field])) === key)
+          : null;
+        if (!asset) return {
+          status: "unavailable",
+          reason: coverageGap ? "documented-coverage-gap" : "asset-not-found",
+          kind,
+          selectors,
+          ...(coverageGap ? { coverageGap } : {}),
+          requested: query
+        };
+        const primaryKey = JSON.stringify(index.selectorFields.map(field => asset.selectors[field]));
+        return {
+          status: "ok",
+          apiVersion: API_VERSION,
+          releaseVersion: index.releaseVersion,
+          kind,
+          collectionId: index.collectionId,
+          assetId,
+          selectors: asset.selectors,
+          requestedSelectors: selectors,
+          selectorAliasUsed: key !== primaryKey,
+          path: asset.path,
+          url: joinReleaseUrl(baseUrl, asset.path),
+          sha256: asset.sha256,
+          mediaType: asset.mediaType,
+          width: asset.width,
+          height: asset.height,
+          motion: asset.motion,
+          mainColorHex: asset.mainColorHex || null,
+          fallback: null
+        };
+      } catch (error) {
+        return { status: "unavailable", reason: "collection-load-failed", error: error.message, kind, requested: query };
+      }
+    }
+
+    async function resolveTrainerSprite(query = {}) {
+      if (!baseUrl) return { status: "unavailable", reason: "release-base-not-configured", requested: query };
+      const requestedSelectors = normalizeTrainerSpriteQuery(query);
+      if (!requestedSelectors) return { status: "unavailable", reason: "invalid-trainer-sprite-selectors", requested: query };
+      try {
+        const index = await loadCollection("trainer-sprite");
+        const candidateMap = new Map();
+        for (const [assetId, asset] of Object.entries(index.assets || {})) {
+          for (const selectors of [asset.selectors, ...(asset.selectorAliases || [])]) {
+            if (Object.entries(requestedSelectors).some(([field, value]) => value !== null && selectors[field] !== value)) continue;
+            if (!candidateMap.has(assetId)) candidateMap.set(assetId, { assetId, asset, matchedSelectors: selectors });
+          }
+        }
+        let candidates = [...candidateMap.values()];
+        if (!requestedSelectors.gender) {
+          const shared = candidates.filter(candidate => candidate.matchedSelectors.gender === "default");
+          if (shared.length) candidates = shared;
+        }
+        const matchingCoverageGaps = (index.coverageGaps || []).filter(gap =>
+          Object.entries(requestedSelectors).every(([field, value]) => value === null || gap.selectors?.[field] === value)
+        );
+        if (!candidates.length && matchingCoverageGaps.length) return {
+          status: "unavailable",
+          reason: "documented-coverage-gap",
+          kind: "trainer-sprite",
+          requestedSelectors,
+          coverageGaps: matchingCoverageGaps,
+          requested: query
+        };
+        if (candidates.length === 1 && matchingCoverageGaps.length) return {
+          status: "unavailable",
+          reason: "ambiguous-trainer-sprite",
+          kind: "trainer-sprite",
+          requestedSelectors,
+          candidateAssetIds: candidates.map(candidate => candidate.assetId).sort(),
+          coverageGaps: matchingCoverageGaps,
+          requested: query
+        };
+        if (candidates.length !== 1) return {
+          status: "unavailable",
+          reason: candidates.length ? "ambiguous-trainer-sprite" : "asset-not-found",
+          kind: "trainer-sprite",
+          requestedSelectors,
+          candidateAssetIds: candidates.map(candidate => candidate.assetId).sort(),
+          requested: query
+        };
+        const { assetId, asset, matchedSelectors } = candidates[0];
+        const primaryKey = JSON.stringify(index.selectorFields.map(field => asset.selectors[field]));
+        const matchedKey = JSON.stringify(index.selectorFields.map(field => matchedSelectors[field]));
+        return {
+          status: "ok",
+          apiVersion: API_VERSION,
+          releaseVersion: index.releaseVersion,
+          kind: "trainer-sprite",
+          collectionId: index.collectionId,
+          assetId,
+          selectors: asset.selectors,
+          matchedSelectors,
+          requestedSelectors,
+          selectorAliasUsed: matchedKey !== primaryKey,
+          path: asset.path,
+          url: joinReleaseUrl(baseUrl, asset.path),
+          sha256: asset.sha256,
+          mediaType: asset.mediaType,
+          width: asset.width,
+          height: asset.height,
+          motion: asset.motion,
+          fallback: null
+        };
+      } catch (error) {
+        return { status: "unavailable", reason: "collection-load-failed", error: error.message, kind: "trainer-sprite", requested: query };
+      }
+    }
+
+    async function resolveTypeIcon(query = {}) {
+      if (!baseUrl) return { status: "unavailable", reason: "release-base-not-configured", requested: query };
+      const selectors = normalizeTypeIconQuery(query);
+      if (!selectors) return { status: "unavailable", reason: "invalid-type-icon-selectors", requested: query };
+      return resolveCollectionAsset("type-icon", "type-icon", selectors, query);
+    }
+
+    async function resolveItemSprite(query = {}) {
+      if (!baseUrl) return { status: "unavailable", reason: "release-base-not-configured", requested: query };
+      const selectors = normalizeItemSpriteQuery(query);
+      if (selectors?.absent) return { status: "unavailable", reason: "item-not-present", kind: "item-sprite", requested: query };
+      if (!selectors) return { status: "unavailable", reason: "invalid-item-sprite-selectors", requested: query };
+      return resolveCollectionAsset("item-sprite", "item-sprite", selectors, query);
+    }
+
+    async function resolveStatusConditionIcon(query = {}) {
+      if (!baseUrl) return { status: "unavailable", reason: "release-base-not-configured", requested: query };
+      const selectors = normalizeStatusConditionIconQuery(query);
+      if (!selectors) return { status: "unavailable", reason: "invalid-status-condition-icon-selectors", requested: query };
+      return resolveCollectionAsset("status-condition-icon", "status-condition-icon", selectors, query);
+    }
+
+    async function resolveBadgeIcon(query = {}) {
+      if (!baseUrl) return { status: "unavailable", reason: "release-base-not-configured", requested: query };
+      const selectors = normalizeBadgeIconQuery(query);
+      if (!selectors) return { status: "unavailable", reason: "invalid-badge-icon-selectors", requested: query };
+      return resolveCollectionAsset("badge-icon", "badge-icon", selectors, query);
+    }
+
+    async function resolveGameTitleArt(query = {}) {
+      if (!baseUrl) return { status: "unavailable", reason: "release-base-not-configured", requested: query };
+      const selectors = normalizeGameTitleArtQuery(query);
+      if (!selectors) return { status: "unavailable", reason: "invalid-game-title-art-selectors", requested: query };
+      return resolveCollectionAsset("game-title-art", "game-title-art", selectors, query);
+    }
+
+    async function resolveMoveCategoryIcon(query = {}) {
+      if (!baseUrl) return { status: "unavailable", reason: "release-base-not-configured", requested: query };
+      const category = normalizeToken(query.category || query.name);
+      const style = normalizeToken(query.style || "champions-approved");
+      if (!["physical", "special", "status"].includes(category) || !["champions", "championsapproved"].includes(style)) {
+        return { status: "unavailable", reason: "invalid-move-category-selectors", requested: query };
+      }
+      return resolveCollectionAsset("move-category-icon", "move-category-icon",
+        { style: "champions-approved", category }, query);
+    }
+
+    async function resolveAsset(query = {}) {
+      const kind = normalizeToken(query.kind || query.assetKind || (query.spriteType ? "pokemon-sprite" : ""));
+      let result;
+      if (!kind || kind === "pokemonsprite" || kind === "sprite" || kind === "pokemon" || kind === "icon") {
+        result = await resolve(query);
+        result.kind ||= "pokemon-sprite";
+        return result;
+      }
+      if (kind === "typeicon" || kind === "type") result = await resolveTypeIcon(query);
+      else if (["movecategoryicon", "movecategory"].includes(kind)) result = await resolveMoveCategoryIcon(query);
+      else if (kind === "itemsprite" || kind === "itemicon" || kind === "item") result = await resolveItemSprite(query);
+      else if (["statusconditionicon", "statusicon", "conditionicon", "statuscondition", "status"].includes(kind)) result = await resolveStatusConditionIcon(query);
+      else if (["badgeicon", "gymbadge", "progressionicon", "badge"].includes(kind)) result = await resolveBadgeIcon(query);
+      else if (["gametitleart", "gametitlelogo", "titlelogo", "gamelogo"].includes(kind)) result = await resolveGameTitleArt(query);
+      else if (["trainersprite", "trainer", "trainerportrait"].includes(kind)) result = await resolveTrainerSprite(query);
+      else result = { status: "unavailable", reason: "unknown-asset-kind", kind: query.kind, requested: query };
+      if (result.status === "ok") diagnostics.resolved += 1;
+      else diagnostics.unavailable += 1;
+      return result;
+    }
+
+    function applyImageResult(image, result, callbacks = {}) {
+      if (result.status === "ok") {
+        image.src = result.url;
+        image.hidden = false;
+        image.style.removeProperty("display");
+        image.style.removeProperty("visibility");
+        image.dataset.pokemonAssetKind = result.kind || "pokemon-sprite";
+        if (result.profileId) image.dataset.pokemonAssetProfile = result.profileId;
+        if (result.appearanceId) image.dataset.pokemonAssetAppearance = result.appearanceId;
+        if (result.genderVariant) image.dataset.pokemonAssetGender = result.genderVariant;
+        if (result.variantKey) image.dataset.pokemonAssetVariant = result.variantKey;
+        if (result.collectionId) image.dataset.pokemonAssetCollection = result.collectionId;
+        if (result.assetId) image.dataset.pokemonAssetId = result.assetId;
+        if (result.selectors?.style) image.dataset.pokemonAssetStyle = result.selectors.style;
+        if (result.selectors?.badge) image.dataset.pokemonAssetBadge = result.selectors.badge;
+        if (result.selectors?.titleId) image.dataset.pokemonAssetTitle = result.selectors.titleId;
+        if (result.selectors?.size) image.dataset.pokemonAssetSize = result.selectors.size;
+        if (result.selectors?.format) image.dataset.pokemonAssetFormat = result.selectors.format;
+        if (result.selectors?.subject) image.dataset.pokemonAssetSubject = result.selectors.subject;
+        if (result.selectors?.spriteSet) image.dataset.pokemonAssetSpriteSet = result.selectors.spriteSet;
+        if (result.fallback) image.dataset.pokemonAssetFallback = `${result.fallback.requestedSpriteType}->${result.fallback.resolvedSpriteType}`;
+        else delete image.dataset.pokemonAssetFallback;
+        image.onerror = () => {
+          image.hidden = true;
+          image.dataset.pokemonAssetError = "image-load-failed";
+          callbacks.onUnavailable?.({ ...result, status: "unavailable", reason: "image-load-failed" });
+        };
+        callbacks.onResolved?.(result);
+      } else {
+        image.removeAttribute("src");
+        image.hidden = true;
+        image.dataset.pokemonAssetError = result.reason;
+        callbacks.onUnavailable?.(result);
+      }
+    }
+
+    async function setImage(image, query, callbacks = {}) {
+      if (!image) return { status: "unavailable", reason: "image-element-missing" };
+      const requestId = String(Number(image.dataset.pokemonAssetRequestId || 0) + 1);
+      image.dataset.pokemonAssetRequestId = requestId;
+      const result = await resolve(query);
+      if (image.dataset.pokemonAssetRequestId !== requestId) return { status: "unavailable", reason: "superseded-request" };
+      applyImageResult(image, result, callbacks);
+      return result;
+    }
+
+    async function setAssetImage(image, query, callbacks = {}) {
+      if (!image) return { status: "unavailable", reason: "image-element-missing" };
+      const requestId = String(Number(image.dataset.pokemonAssetRequestId || 0) + 1);
+      image.dataset.pokemonAssetRequestId = requestId;
+      const result = await resolveAsset(query);
+      if (image.dataset.pokemonAssetRequestId !== requestId) return { status: "unavailable", reason: "superseded-request" };
+      applyImageResult(image, result, callbacks);
+      return result;
+    }
+
+    function bindPendingImage(image) {
+      const token = image?.dataset?.pokemonAssetToken;
+      if (!token || !pendingImageQueries.has(token)) return;
+      const pending = pendingImageQueries.get(token);
+      pendingImageQueries.delete(token);
+      delete image.dataset.pokemonAssetToken;
+      void (pending.generic ? setAssetImage(image, pending.query) : setImage(image, pending.query));
+    }
+
+    function observe(root = global.document) {
+      if (!root?.querySelectorAll) return null;
+      root.querySelectorAll("img[data-pokemon-asset-token]").forEach(bindPendingImage);
+      if (!global.MutationObserver) return null;
+      const observer = new MutationObserver(records => {
+        for (const record of records) for (const node of record.addedNodes) {
+          if (node.nodeType !== 1) continue;
+          if (node.matches?.("img[data-pokemon-asset-token]")) bindPendingImage(node);
+          node.querySelectorAll?.("img[data-pokemon-asset-token]").forEach(bindPendingImage);
+        }
+      });
+      observer.observe(root.documentElement || root, { childList: true, subtree: true });
+      return observer;
+    }
+
+    function imageHtml(query, attributes = {}) {
+      const token = `pokemon-asset-${nextImageToken++}`;
+      pendingImageQueries.set(token, { query, generic: false });
+      const className = attributes.className ? ` class="${escapeHtml(attributes.className)}"` : "";
+      const alt = ` alt="${escapeHtml(attributes.alt || "Pokemon sprite")}"`;
+      const title = attributes.title ? ` title="${escapeHtml(attributes.title)}"` : "";
+      return `<img${className}${alt}${title} data-pokemon-asset-token="${token}">`;
+    }
+
+    function assetHtml(query, attributes = {}) {
+      const token = `pokemon-asset-${nextImageToken++}`;
+      pendingImageQueries.set(token, { query, generic: true });
+      const className = attributes.className ? ` class="${escapeHtml(attributes.className)}"` : "";
+      const alt = ` alt="${escapeHtml(attributes.alt || "Pokemon asset")}"`;
+      const title = attributes.title ? ` title="${escapeHtml(attributes.title)}"` : "";
+      return `<img${className}${alt}${title} data-pokemon-asset-token="${token}">`;
+    }
+
+    function configure(nextBaseUrl) {
+      const normalized = trimBaseUrl(nextBaseUrl);
+      if (!normalized) throw new Error("Pokemon asset release base is invalid.");
+      baseUrl = normalized;
+      rootPromise = null;
+      catalogPromise = null;
+      profilePromises.clear();
+      collectionPromises.clear();
+      diagnostics.releaseBase = normalized;
+      diagnostics.releaseVersion = null;
+      diagnostics.loadedProfiles = [];
+      diagnostics.loadedCollections = [];
+    }
+
+    return Object.freeze({
+      apiVersion: API_VERSION,
+      resolve,
+      resolveAsset,
+      resolveGameTitleArt,
+      resolveTrainerSprite,
+      setImage,
+      setAssetImage,
+      imageHtml,
+      assetHtml,
+      observe,
+      preload: async spriteType => loadProfile(PROFILE_BY_TYPE[normalizeSpriteType(spriteType)]),
+      preloadCollection: loadCollection,
+      configure,
+      diagnostics: () => JSON.parse(JSON.stringify(diagnostics))
+    });
+  }
+
+  global.PokemonAssets = Object.freeze({
+    apiVersion: API_VERSION,
+    createResolver,
+    configuredReleaseBase,
+    joinReleaseUrl,
+    normalizeToken,
+    normalizeGender,
+    normalizeSpriteType,
+    variantKeyFor,
+    normalizeTypeIconQuery,
+    normalizeItemSpriteQuery,
+    normalizeStatusConditionIconQuery,
+    normalizeBadgeIconQuery,
+    normalizeTrainerSpriteQuery
+  });
+})(globalThis);

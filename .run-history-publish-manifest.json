@@ -1,0 +1,28 @@
+{
+  "source": "Bots\\beldumsafe\\run_history\\platinum-kaizo",
+  "generatedAt": "2026-09-21T17:53:39.646Z",
+  "files": [
+    "assets\\pokemon_asset_gateway.global.js",
+    "assets\\pokemon_asset_gateway.provenance.json",
+    "assets\\pokemon_asset_resolver.global.js",
+    "assets\\pokemon_asset_resolver.provenance.json",
+    "assets\\run_history_pokemon_sprites.js",
+    "index.html",
+    "pokemon\\aron.html",
+    "pokemon\\bibarel.html",
+    "pokemon\\burmy.html",
+    "pokemon\\cubone.html",
+    "pokemon\\delibird.html",
+    "pokemon\\glameow.html",
+    "pokemon\\goldeen.html",
+    "pokemon\\gulpin.html",
+    "pokemon\\luvdisc.html",
+    "pokemon\\magby.html",
+    "pokemon\\nuzleaf.html",
+    "pokemon\\ponyta.html",
+    "pokemon\\skitty.html",
+    "pokemon\\turtwig.html",
+    "pokemon\\vulpix.html",
+    "pokemon_run_history.json"
+  ]
+}

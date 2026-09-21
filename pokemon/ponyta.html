@@ -1,3 +1,1876 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Ponyta Run History</title><style>
-:root{--bg:#0b1020;--panel:#151c31;--border:rgba(255,255,255,.15);--text:#f7f7fb;--muted:rgba(247,247,251,.72);--accent:#8cb4ff;--danger:#ff8c8c;--gold:#ffd76a}*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#080b14,#11192d);color:var(--text);font-family:Arial,sans-serif}a{color:var(--accent);text-decoration:none}.container{max-width:1100px;margin:0 auto;padding:24px}.nav{margin-bottom:18px;color:var(--muted)}.hero{display:flex;gap:18px;align-items:center;background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 12px 30px rgba(0,0,0,.25)}.sprite{width:96px;height:96px;object-fit:contain;image-rendering:pixelated}h1{margin:0;font-size:38px}.subtitle{color:var(--muted);margin-top:6px;line-height:1.4}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:16px}.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:14px}.card h2{margin:0 0 10px 0;font-size:18px}.badge{display:inline-block;padding:5px 9px;border-radius:999px;border:1px solid rgba(255,215,106,.4);background:rgba(255,215,106,.12);color:var(--gold);font-weight:700;font-size:13px;margin:3px}.pill{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.07);color:var(--muted);font-size:13px;margin:3px}table{width:100%;border-collapse:collapse;margin-top:8px;overflow:hidden;border-radius:12px}th,td{border-bottom:1px solid var(--border);padding:8px;text-align:left;vertical-align:top;font-size:14px}th{color:var(--muted);background:rgba(255,255,255,.05)}.death{border-color:rgba(255,140,140,.35);background:rgba(255,80,80,.08)}.note,.small{color:var(--muted);line-height:1.45}.small{font-size:13px}.search{width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);background:#0c1223;color:var(--text);font-size:16px;margin:12px 0}.list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.list a{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;color:var(--text)}.list img{width:42px;height:42px;image-rendering:pixelated;object-fit:contain}.timeline-item{border-left:3px solid rgba(140,180,255,.55);padding:8px 10px;margin:8px 0;background:rgba(255,255,255,.05);border-radius:10px}.timeline-type{color:var(--accent);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.5px}.review{border-left-color:var(--danger);background:rgba(255,80,80,.08)}
-</style></head><body><div class="container"><div class="nav"><a href="../index.html">← Back to Run History</a></div><section class="hero"><img class="sprite" src="https://play.pokemonshowdown.com/sprites/gen4/ponyta.png" alt="Ponyta"><div><h1>Ponyta</h1><div class="subtitle">Present in: A12</div><div class="subtitle">Latest seen: fleetwood · Lv. 11 · Reckless</div></div></section><div class="grid"><div class="card"><h2>Runs</h2><span class="pill">A12</span></div><div class="card"><h2>Badges</h2><span class="small">No badge credits logged yet.</span></div><div class="card"><h2>Deaths</h2><div class="small">No confirmed deaths logged.</div></div><div class="card"><h2>Notes</h2><div class="small">No notes logged.</div></div></div><div class="card" style="margin-top:16px"><h2>Timeline</h2><div class="small">No timeline events logged yet.</div></div><div class="card" style="margin-top:16px"><h2>Appearances</h2><table><thead><tr><th>Run</th><th>Checkpoint</th><th>Name</th><th>Lv</th><th>Ability</th><th>Nature</th><th>Met</th><th>Storage</th><th>Moves</th></tr></thead><tbody><tr><td>A12</td><td>20260501_030444</td><td>fleetwood</td><td>11</td><td>Reckless</td><td>Modest</td><td>Route 207</td><td>party slot 6</td><td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td></tr></tbody></table></div></div></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ponyta - Platinum Kaizo Run History</title>
+<meta name="pokemon-asset-gateway-origin" content="https://assets.phantomsafe.tv"><meta name="pokemon-asset-release-version" content="0.8.0-dev.1"><script defer src="../assets/pokemon_asset_resolver.global.js"></script><script defer src="../assets/pokemon_asset_gateway.global.js"></script><script defer src="../assets/run_history_pokemon_sprites.js"></script>
+<style>
+:root { --bg:#0b1020; --panel:#151c31; --panel2:#1d2640; --border:rgba(255,255,255,.15); --text:#f7f7fb; --muted:rgba(247,247,251,.72); --accent:#8cb4ff; --danger:#ff8c8c; --gold:#ffd76a; }
+* { box-sizing:border-box; }
+body { margin:0; background:linear-gradient(180deg,#080b14,#11192d); color:var(--text); font-family:Arial,sans-serif; }
+a { color:var(--accent); text-decoration:none; }
+.container { max-width:1100px; margin:0 auto; padding:24px; }
+.nav { margin-bottom:18px; color:var(--muted); }
+.hero { display:flex; gap:18px; align-items:center; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:18px; box-shadow:0 12px 30px rgba(0,0,0,.25); }
+.sprite { width:96px; height:96px; object-fit:contain; image-rendering:pixelated; }
+h1 { margin:0; font-size:36px; }
+.subtitle { color:var(--muted); margin-top:6px; line-height:1.4; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; margin-top:16px; }
+.card { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px; }
+.card h2 { margin:0 0 10px 0; font-size:18px; }
+.badge { display:inline-block; padding:5px 9px; border-radius:999px; border:1px solid rgba(255,215,106,.4); background:rgba(255,215,106,.12); color:var(--gold); font-weight:700; font-size:13px; margin:3px; }
+.pill { display:inline-block; padding:4px 8px; border-radius:999px; border:1px solid var(--border); background:rgba(255,255,255,.07); color:var(--muted); font-size:13px; margin:3px; }
+table { width:100%; border-collapse:collapse; margin-top:8px; }
+th, td { border-bottom:1px solid var(--border); padding:8px; text-align:left; vertical-align:top; font-size:14px; }
+th { color:var(--muted); background:rgba(255,255,255,.05); }
+.death { border-color:rgba(255,140,140,.35); background:rgba(255,80,80,.08); }
+.note, .small { color:var(--muted); line-height:1.45; }
+.small { font-size:13px; }
+.search { width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:#0c1223; color:var(--text); font-size:16px; margin:12px 0; }
+.list { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
+.list a { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px; display:flex; align-items:center; gap:10px; color:var(--text); }
+.list img { width:42px; height:42px; image-rendering:pixelated; object-fit:contain; }
+.timeline-item { border-left:3px solid rgba(140,180,255,.55); padding:8px 10px; margin:8px 0; background:rgba(255,255,255,.05); border-radius:8px; }
+.timeline-type { color:var(--accent); font-weight:800; font-size:12px; text-transform:uppercase; letter-spacing:.5px; }
+.review { border-left-color:var(--danger); background:rgba(255,80,80,.08); }
+</style>
+</head>
+<body><div class="container">
+<div class="nav"><a href="../index.html">Back to Platinum Kaizo</a> / <a href="../../index.html">All games</a></div>
+<section class="hero">
+    <img class="sprite" alt="Ponyta" data-pokemon-asset data-pokemon-species="Ponyta" data-pokemon-gender="M" data-pokemon-shiny="false" data-pokemon-view="front" data-pokemon-sprite-type="pixel" hidden>
+    <div>
+        <h1>Ponyta</h1>
+        <div class="subtitle">Platinum Kaizo history</div>
+        <div class="subtitle">Present in: A12</div>
+        <div class="subtitle">Latest seen: fleetwood / Lv. 11 / Reckless</div>
+    </div>
+</section>
+<div class="grid">
+    <div class="card"><h2>Runs</h2><span class="pill">A12</span></div>
+    <div class="card"><h2>Badges</h2><span class="small">No badge credits logged yet.</span></div>
+    <div class="card"><h2>Deaths</h2><div class="small">No deaths logged.</div></div>
+    <div class="card"><h2>Notes</h2><div class="small">No notes logged.</div></div>
+</div>
+<div class="card" style="margin-top:16px;">
+    <h2>Timeline</h2>
+    
+            <div class="timeline-item ">
+                <div class="timeline-type">A12 / auto_item_change</div>
+                <div>fleetwood the Ponyta item changed from nothing to None.</div>
+                <div class="small">2026-08-28T10:39:18.361Z</div>
+            </div>
+</div>
+<div class="card" style="margin-top:16px;">
+    <h2>Appearances</h2>
+    <table>
+        <thead><tr><th>Run</th><th>Checkpoint</th><th>Name</th><th>Lv</th><th>Ability</th><th>Nature</th><th>Met</th><th>Storage</th><th>Moves</th></tr></thead>
+        <tbody>
+        <tr>
+            <td>A12</td>
+            <td>20260501_030444</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_004343</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_024330</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_041657</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_041940</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_042130</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_042216</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_043413</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_075819</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_080232</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_080501</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_083055</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_083129</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_083150</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_085428</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_115632</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_150731</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_154336</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_160110</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_160339</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_164148</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_164405</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_164629</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_171054</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260503_184224</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260504_181632</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260506_110742</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260506_191445</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260507_225436</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260507_225844</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260508_091223</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260509_232957</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260513_110819</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260517_004940</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260518_170804</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260519_191052</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260519_200413</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260519_202429</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260519_232308</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260520_001130</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260521_083627</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260524_093701</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260525_121336</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260601_142953</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260601_183800</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260601_190004</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260601_192914</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260602_103128</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260602_103303</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260602_103306</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260604_201448</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260606_142549</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260612_103450</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260618_164843</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260618_165134</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260630_094828</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260701_123446</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260701_194129</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260715_175355</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_101844</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_102328</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_102918</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_103250</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_104030</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_104410</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_104516</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_105827</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_110332</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_110645</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_111157</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_111640</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_112707</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_113423</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_114206</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_114925</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_115517</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260718_210810</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260719_111148</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260719_111251</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260719_180715</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260719_180720</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260719_180841</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260720_095502</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260720_095508</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260720_095552</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260720_100758</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260720_132724</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260721_091434</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260721_091513</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260722_175611</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260723_185638</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260723_185644</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260723_185722</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260728_130421</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260728_130513</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260729_090109</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260729_090158</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260730_085732</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260730_085737</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260730_085813</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260731_085823</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260801_095631</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260803_090325</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260803_090401</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260806_002416</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260806_010917</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260806_011033</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260806_011810</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260806_012713</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260806_180154</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260806_181738</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260806_213540</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260809_102651</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260812_084942</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260812_193945</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260813_200313</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260814_071218</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260816_090514</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260816_134015</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260816_154812</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_090304</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_104736</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_104821</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_105642</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_105823</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_165025</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_170128</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_171651</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_172747</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_185724</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_192123</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_210844</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_212641</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_213538</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260820_213706</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260821_083948</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260821_205613</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260822_090048</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260823_024018</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260823_031725</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260823_092321</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260823_092404</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260824_151444</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260825_013003</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260826_034007</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260827_165313</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260827_171743</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260828_033918</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260828_035842</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260831_171856</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260905_094443</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260907_201156</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260908_082419</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260908_120612</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260908_172318</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260908_203756</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260909_064626</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260912_135755</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260912_171209</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260912_171300</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260915_104045</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260917_092341</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260917_093249</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr>
+        <tr>
+            <td>A12</td>
+            <td>20260918_093058</td>
+            <td>fleetwood</td>
+            <td>11</td>
+            <td>Reckless</td>
+            <td>Modest</td>
+            <td>Route 207</td>
+            <td>party slot 6</td>
+            <td>Ember<br>Quick Attack<br>Stomp<br>Flame Wheel</td>
+        </tr></tbody>
+    </table>
+</div></div></body>
+</html>
